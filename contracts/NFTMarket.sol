@@ -45,6 +45,8 @@ contract NFTMarket {
     mapping(address => uint) pendingReturns;
 
     /* ========== EVENTS ========== */
+
+    // broadcast details of newly created nft bid
     event BidItemCreated (
         uint indexed itemId,
         address indexed nftContract,
@@ -59,7 +61,51 @@ contract NFTMarket {
         bool sold
     );
 
+    // broadcast a higher bid 
     event HighestBidIncreased(uint indexed itemId,address bidder, uint amount);
+
+    // broadcast bid ended
     event AuctionEnded(uint indexed itemId,address winner, uint amount);
+
+    /* ========== CONSTRUCTOR ========== */
+    constructor() {
+        owner = payable(msg.sender);
+    }
+
+
+    /* ========== FUNCTIONS ========== */
+    function createBidItem(
+        address nftContract,
+        uint256 tokenId,
+        uint256 minPrice,
+        uint biddingTime
+    ) public payable {
+        require(minPrice>=0, "Price must be at least 1 wei");
+        require(msg.value == listingPrice, "Price must be equal to listing price");
+
+        _itemIds.increment();
+        uint256 itemId = _itemIds.current();
+        uint auctionEndTime = block.timestamp + biddingTime;
+
+        idToBidItem[itemId] = BidItem(
+            itemId,
+            nftContract,
+            tokenId,
+            payable(msg.sender),
+            payable(address(0)),
+            minPrice,
+            auctionEndTime,
+            payable(address(0)),
+            minPrice,
+            false,
+            false
+        );
+
+        IERC721(nftContract).transferFrom(msg.sender,address(this),tokenId);
+
+        emit BidItemCreated(itemId, nftContract, tokenId, msg.sender, address(0), minPrice,auctionEndTime,payable(address(0)),minPrice,false,false);
+
+
+    }
 
 }
