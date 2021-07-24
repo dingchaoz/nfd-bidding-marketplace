@@ -149,4 +149,34 @@ contract NFTMarket {
         return true;
     }
 
+    function auctionEnd(
+        address nftContract,
+        uint256 itemId
+    ) public payable entrancyGuard {
+        // 1. Conditions
+        require(block.timestamp >= idToBidItem[itemId].auctionEndTime, "Auction not yet ended.");
+        require(!idToBidItem[itemId].ended, "auctionEnd has already been called.");
+
+        // 2. Effects
+        uint tokenId = idToBidItem[itemId].tokenId;
+        idToBidItem[itemId].ended = true;
+        // set item to be sold
+        idToBidItem[itemId].sold = true;
+        // update the load mapping owner to the highest bidder
+        idToBidItem[itemId].owner = payable(idToBidItem[itemId].highestBidder);
+        // increment item sold by 1
+        _itemSold.increment();
+
+        emit AuctionEnded(itemId,idToBidItem[itemId].highestBidder, idToBidItem[itemId].highestBid);
+
+        // 3. Interactions
+        // transfer the highest bid to the seller of the nft
+        idToBidItem[itemId].seller.transfer(idToBidItem[itemId].highestBid);
+        // transfer the ownership of the nft to the highest bidder
+        IERC721(nftContract).transferFrom(address(this),idToBidItem[itemId].highestBidder,tokenId);
+        // pay the onwer of the marketplace contract the listigPrice (commission)
+        payable(owner).transfer(listingPrice);
+
+    }
+
 }
