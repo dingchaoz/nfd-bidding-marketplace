@@ -17,6 +17,9 @@ contract NFTMarket {
     // counter of nft sold on the market
     Counters.Counter private _itemSold;
 
+    // counter of reentrancy
+    Counters.Counter private _entrancyCount;
+
     // contract onwer
     address payable owner;
 
@@ -72,6 +75,14 @@ contract NFTMarket {
         owner = payable(msg.sender);
     }
 
+     /* ========== MODIFIER ========== */
+
+      modifier nonReentrant() {
+        _entrancyCount.increment();
+        uint256 guard = _entrancyCount.current();
+        _;
+        require(guard == _entrancyCount.current(), "Reentrancy is not allowed"); 
+    }
 
     /* ========== FUNCTIONS ========== */
     function createBidItem(
@@ -109,7 +120,7 @@ contract NFTMarket {
     }
 
 
-    function bid(uint256 itemId) public payable {
+    function bid(uint256 itemId) public payable nonReentrant {
 
         // Revert the call if the bidding
         // period is over.
@@ -134,7 +145,7 @@ contract NFTMarket {
     }
 
 
-    function withdraw() public returns (bool) {
+    function withdraw() public nonReentrant returns (bool){
         uint amount = pendingReturns[msg.sender];
         if (amount > 0) {
  
@@ -152,7 +163,7 @@ contract NFTMarket {
     function auctionEnd(
         address nftContract,
         uint256 itemId
-    ) public payable  {
+    ) public payable nonReentrant{
         // 1. Conditions
         require(block.timestamp >= idToBidItem[itemId].auctionEndTime, "Auction not yet ended.");
         require(!idToBidItem[itemId].ended, "auctionEnd has already been called.");
