@@ -111,8 +111,8 @@ export default function Home() {
       />
       <div className="flex space-x-3 mb-4 text-sm font-medium">
          <div className="flex-auto flex space-x-3">
-            <button className="w-1/2 flex py-3 bg-blue-500 items-center justify-center rounded-md bg-black text-white" onClick={() => bidNft(nft)}>Place new bid</button>
-            <button className="w-1/2 flex py-3 bg-green-500 items-center justify-center rounded-md border text-white border-gray-300" onClick={() => withdrawBid(nft)}>Withdraw bid</button>
+            <button className="w-1/2 flex py-3 bg-pink-500 items-center justify-center rounded-md bg-black text-white" onClick={() => bidNft(nft)}>Place new bid</button>
+            <button className="w-1/2 flex py-3 bg-blue-400 items-center justify-center rounded-md border text-white border-gray-300" onClick={() => withdrawBid(nft)}>Withdraw bid</button>
             <button className="w-1/2 flex py-3 bg-gray-500 items-center justify-center rounded-md border  text-white border-gray-300" onClick={() => endBid(nft)}>End Auction</button>
          </div>
       </div>

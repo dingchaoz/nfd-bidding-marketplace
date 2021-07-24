@@ -28,6 +28,7 @@ export default function CreateItem() {
         }
       )
       const url = `https://ipfs.infura.io/ipfs/${added.path}`
+      console.log('ipfs url is: ', url)
       setFileUrl(url)
     } catch (error) {
       console.log('Error uploading file: ', error)
