@@ -1,4 +1,3 @@
-const helper = require("../utils/utils.js")
 const { time } = require('@openzeppelin/test-helpers');
 const { expect,assert} = require("chai");
 const ether = require("@openzeppelin/test-helpers/src/ether");
@@ -28,6 +27,15 @@ describe("Marketplace contract", function() {
     await nft.deployed();
     [creator, addr1, addr2, addr3] = await ethers.getSigners()
     provider = ethers.provider
+
+  });
+
+  describe("Deployment", function () {
+
+    it("Should has the right name and symbol", async function () {
+      expect(await nft.name()).to.equal("NFT Market");
+      expect(await nft.symbol()).to.equal("NMART");
+    });
 
   });
 
