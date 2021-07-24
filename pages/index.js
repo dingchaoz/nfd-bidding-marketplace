@@ -93,14 +93,14 @@ export default function Home() {
             <p className="text-gray-400">{nft.description}</p>
          </div>
       </div>
-      <div class="flex flex-wrap">
-         <h1 class="flex-auto text-xl font-semibold">
+      <div className="flex flex-wrap">
+         <h1 className="flex-auto text-xl font-semibold">
             Current Highest Bid
          </h1>
-         <div class="text-xl font-semibold text-gray-500">
+         <div className="text-xl font-semibold text-gray-500">
             {nft.currentHighestBid} ETH
          </div>
-         <div class="w-full flex-none text-sm font-medium text-gray-500 mt-2">
+         <div className="w-full flex-none text-sm font-medium text-gray-500 mt-2">
             Bidding going on..
          </div>
       </div>
@@ -109,11 +109,11 @@ export default function Home() {
          className="w-full text-center bg-white-500 font-bold py-2 px-2 rounded border"
          onChange={e => updateFormInput({ ...formInput, enterNewBid: e.target.value })}
       />
-      <div class="flex space-x-3 mb-4 text-sm font-medium">
-         <div class="flex-auto flex space-x-3">
-            <button class="w-1/2 flex py-3 bg-blue-500 items-center justify-center rounded-md bg-black text-white" onClick={() => bidNft(nft)}>Place new bid</button>
-            <button class="w-1/2 flex py-3 bg-green-500 items-center justify-center rounded-md border text-white border-gray-300" onClick={() => withdrawBid(nft)}>Withdraw bid</button>
-            <button class="w-1/2 flex py-3 bg-gray-500 items-center justify-center rounded-md border  text-white border-gray-300" onClick={() => endBid(nft)}>End Auction</button>
+      <div className="flex space-x-3 mb-4 text-sm font-medium">
+         <div className="flex-auto flex space-x-3">
+            <button className="w-1/2 flex py-3 bg-blue-500 items-center justify-center rounded-md bg-black text-white" onClick={() => bidNft(nft)}>Place new bid</button>
+            <button className="w-1/2 flex py-3 bg-green-500 items-center justify-center rounded-md border text-white border-gray-300" onClick={() => withdrawBid(nft)}>Withdraw bid</button>
+            <button className="w-1/2 flex py-3 bg-gray-500 items-center justify-center rounded-md border  text-white border-gray-300" onClick={() => endBid(nft)}>End Auction</button>
          </div>
       </div>
    </div>

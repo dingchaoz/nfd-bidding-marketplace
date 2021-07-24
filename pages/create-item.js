@@ -114,8 +114,8 @@ export default function CreateItem() {
         <button onClick={createMarket} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg">
           Create Digital Asset
         </button>
-        <p class="text-sm text-gray-500">
-            0.05 ETH listing fee will be charged.
+        <p className="text-sm text-gray-500">
+            0.005 ETH listing fee will be charged.
         </p>
       </div>
     </div>
