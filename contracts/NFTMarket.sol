@@ -38,7 +38,11 @@ contract NFTMarket {
         bool sold;
     }
 
+    // a mapping from ntf item id to its details struct
     mapping(uint256 => BidItem) private idToBidItem;
+
+    // store each bidder's bidding amount so they can withdraw if their bids were overbid
+    mapping(address => uint) pendingReturns;
 
     /* ========== EVENTS ========== */
     event BidItemCreated (
