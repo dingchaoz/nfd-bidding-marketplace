@@ -1,4 +1,4 @@
-//SPDX-License-Identfier: MIT
+// SPDX-License-Identfier: MIT
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -109,7 +109,7 @@ contract NFTMarket {
     }
 
 
-    function bid(uint256 itemId) public payable entrancyGuard{
+    function bid(uint256 itemId) public payable {
 
         // Revert the call if the bidding
         // period is over.
@@ -134,7 +134,7 @@ contract NFTMarket {
     }
 
 
-    function withdraw() public entrancyGuard returns (bool) {
+    function withdraw() public returns (bool) {
         uint amount = pendingReturns[msg.sender];
         if (amount > 0) {
  
@@ -152,7 +152,7 @@ contract NFTMarket {
     function auctionEnd(
         address nftContract,
         uint256 itemId
-    ) public payable entrancyGuard {
+    ) public payable  {
         // 1. Conditions
         require(block.timestamp >= idToBidItem[itemId].auctionEndTime, "Auction not yet ended.");
         require(!idToBidItem[itemId].ended, "auctionEnd has already been called.");
@@ -178,5 +178,71 @@ contract NFTMarket {
         payable(owner).transfer(listingPrice);
 
     }
+
+    /* Returns all unsold market items */
+  function fetchBidItems() public view returns (BidItem[] memory) {
+    uint itemCount = _itemIds.current();
+    uint unsoldItemCount = _itemIds.current() - _itemSold.current();
+    uint currentIndex = 0;
+
+    BidItem[] memory items = new BidItem[](unsoldItemCount);
+    for (uint i = 0; i < itemCount; i++) {
+      if (idToBidItem[i + 1].owner == address(0)) {
+        uint currentId = i + 1;
+        BidItem storage currentItem = idToBidItem[currentId];
+        items[currentIndex] = currentItem;
+        currentIndex += 1;
+      }
+    }
+    return items;
+  }
+
+  /* Returns onlyl items that a user has purchased */
+  function fetchMyNFTs() public view returns (BidItem[] memory) {
+    uint totalItemCount = _itemIds.current();
+    uint itemCount = 0;
+    uint currentIndex = 0;
+
+    for (uint i = 0; i < totalItemCount; i++) {
+      if (idToBidItem[i + 1].owner == msg.sender) {
+        itemCount += 1;
+      }
+    }
+
+    BidItem[] memory items = new BidItem[](itemCount);
+    for (uint i = 0; i < totalItemCount; i++) {
+      if (idToBidItem[i + 1].owner == msg.sender) {
+        uint currentId = i + 1;
+        BidItem storage currentItem = idToBidItem[currentId];
+        items[currentIndex] = currentItem;
+        currentIndex += 1;
+      }
+    }
+    return items;
+  }
+
+  /* Returns only items a user has created */
+  function fetchItemsCreated() public view returns (BidItem[] memory) {
+    uint totalItemCount = _itemIds.current();
+    uint itemCount = 0;
+    uint currentIndex = 0;
+
+    for (uint i = 0; i < totalItemCount; i++) {
+      if (idToBidItem[i + 1].seller == msg.sender) {
+        itemCount += 1;
+      }
+    }
+
+    BidItem[] memory items = new BidItem[](itemCount);
+    for (uint i = 0; i < totalItemCount; i++) {
+      if (idToBidItem[i + 1].seller == msg.sender) {
+        uint currentId = i + 1;
+        BidItem storage currentItem = idToBidItem[currentId];
+        items[currentIndex] = currentItem;
+        currentIndex += 1;
+      }
+    }
+    return items;
+  }
 
 }
