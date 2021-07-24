@@ -7,6 +7,23 @@ import "./Counters.sol";
 
 contract NFTMarket {
 
+    using Counters for Counters.Counter;
+
+    /* ========== STATE VARIABLES ========== */
+
+    // counter of nft created on the market
+    Counters.Counter private _itemIds;
+
+    // counter of nft sold on the market
+    Counters.Counter private _itemSold;
+
+    // contract onwer
+    address payable owner;
+
+    // listing fee 
+    uint256 listingPrice = 0.005 ether;
+
+    // struct to store details of each bidding nft
     struct BidItem {
         uint itemId;
         address nftContract;
