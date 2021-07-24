@@ -108,4 +108,45 @@ contract NFTMarket {
 
     }
 
+
+    function bid(uint256 itemId) public payable entrancyGuard{
+
+        // Revert the call if the bidding
+        // period is over.
+        require(
+            block.timestamp <= idToBidItem[itemId].auctionEndTime,
+            "Auction already ended."
+        );
+
+        // If the bid is not higher, send the
+        // money back.
+        require(
+            msg.value > idToBidItem[itemId].highestBid,
+            "There already is a higher bid."
+        );
+
+        if (idToBidItem[itemId].highestBid != 0) {
+            pendingReturns[idToBidItem[itemId].highestBidder] += idToBidItem[itemId].highestBid;
+        }
+        idToBidItem[itemId].highestBidder = msg.sender;
+        idToBidItem[itemId].highestBid = msg.value;
+        emit HighestBidIncreased(itemId,msg.sender, msg.value);
+    }
+
+
+    function withdraw() public entrancyGuard returns (bool) {
+        uint amount = pendingReturns[msg.sender];
+        if (amount > 0) {
+ 
+            pendingReturns[msg.sender] = 0;
+
+            if (!payable(msg.sender).send(amount)) {
+                // No need to call throw here, just reset the amount owing
+                pendingReturns[msg.sender] = amount;
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
