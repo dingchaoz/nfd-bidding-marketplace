@@ -179,6 +179,10 @@ contract NFTMarket {
 
     }
 
+    function getListingPrice() public view returns (uint256) {
+        return listingPrice;
+    }
+
     /* Returns all unsold market items */
   function fetchBidItems() public view returns (BidItem[] memory) {
     uint itemCount = _itemIds.current();

@@ -39,4 +39,45 @@ describe("Marketplace contract", function() {
 
   });
 
+  describe("Bidding", function(){
+
+    it("Should be able to bid", async function() {
+    let listingPrice = await market.getListingPrice()
+    listingPrice = listingPrice.toString()
+    let nftContractAddress = nft.address
+    let minPrice = ethers.utils.parseUnits('1', 'ether')
+    let auctionPrice = ethers.utils.parseUnits('10', 'ether')
+    await nft.createToken("https://www.mytokenlocation.com")
+    await market.createBidItem(nftContractAddress, 1, minPrice, 10,{value: listingPrice })
+    await market.connect(addr1).bid(1, { value: auctionPrice})
+  
+    });
+    it("Bid failure due to insufficent amount", async function() {
+      let listingPrice = await market.getListingPrice()
+      listingPrice = listingPrice.toString()
+      let nftContractAddress = nft.address
+      let minPrice = ethers.utils.parseUnits('100', 'ether')
+      let auctionPrice = ethers.utils.parseUnits('10', 'ether')
+      await nft.createToken("https://www.mytokenlocation.com")
+      await market.createBidItem(nftContractAddress, 1, minPrice, 10,{value: listingPrice })
+      await expect(
+        market.connect(addr1).bid(1, { value: auctionPrice})
+      ).to.be.revertedWith("There already is a higher bid");
+      });
+    it("Bid failure due to bid expiration", async function() {
+        let listingPrice = await market.getListingPrice()
+        listingPrice = listingPrice.toString()
+        let nftContractAddress = nft.address
+        let minPrice = ethers.utils.parseUnits('1', 'ether')
+        let auctionPrice = ethers.utils.parseUnits('10', 'ether')
+        await nft.createToken("https://www.mytokenlocation.com")
+        await market.createBidItem(nftContractAddress, 1, minPrice, 1,{value: listingPrice })
+        await network.provider.send("evm_increaseTime", [3600])
+        await expect(
+          market.connect(addr1).bid(1, { value: auctionPrice})
+        ).to.be.revertedWith("Auction already ended");
+        })
+
+  });
+
 })
