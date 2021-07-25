@@ -63,7 +63,7 @@ export default function Home() {
     const signer = provider.getSigner()
     const contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
 
-    const transaction = await contract.withdraw()
+    const transaction = await contract.withdraw(nft.tokenId)
     await transaction.wait()
     loadNFTs()
   }

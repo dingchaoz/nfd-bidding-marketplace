@@ -1,7 +1,6 @@
-const { time } = require('@openzeppelin/test-helpers');
 const { expect,assert} = require("chai");
 const ether = require("@openzeppelin/test-helpers/src/ether");
-const DAY = 86400;
+
 
 describe("Marketplace contract", function() {
 
@@ -82,7 +81,7 @@ describe("Marketplace contract", function() {
 
   describe("Withdraw bid", function(){
 
-    it("Should be able to withdraw", async function() {
+    it("Should be able to withdraw if bid is overbid by others", async function() {
     let listingPrice = await market.getListingPrice()
     listingPrice = ethers.BigNumber.from(listingPrice.toString())
 
@@ -100,12 +99,34 @@ describe("Marketplace contract", function() {
     await market.connect(addr3).bid(1, { value: auctionPrice})
     await market.connect(addr2).bid(1, { value: higherAuctionPrice})
     prev_balance = await (provider.getBalance(addr3.address))
-    await market.connect(addr3).withdraw()
+    await market.connect(addr3).withdraw(1)
     new_balance = await provider.getBalance(addr3.address)
     new_balance = ethers.utils.formatEther(new_balance)
     prev_balance = ethers.utils.formatEther(prev_balance)
     expect(ethers.utils.parseUnits(new_balance,"ether")).to.be.above(ethers.utils.parseUnits(prev_balance,"ether"))
     });
+
+    it("Should be not able to withdraw if bid isn't overbid by others", async function() {
+      let listingPrice = await market.getListingPrice()
+      listingPrice = ethers.BigNumber.from(listingPrice.toString())
+  
+      incrementalBid= ethers.BigNumber.from("1000000000000000000");
+      console.log(ethers.utils.formatUnits(incrementalBid.add(listingPrice),18))
+  
+    
+      let nftContractAddress = nft.address
+      let minPrice = ethers.utils.parseUnits('1', 'ether')
+      let auctionPrice = ethers.utils.parseUnits('10', 'ether')
+      let higherAuctionPrice = ethers.utils.parseUnits('20', 'ether')
+  
+      await nft.createToken("https://www.mytokenlocation.com")
+      await market.createBidItem(nftContractAddress, 1, minPrice, 10000,{value: listingPrice })
+      await market.connect(addr3).bid(1, { value: auctionPrice})
+      await market.connect(addr2).bid(1, { value: higherAuctionPrice})
+      await expect(
+         market.connect(addr2).withdraw(1)
+      ).to.be.revertedWith("You are the highest bidder, can't withdraw");
+      });
 
   });
 

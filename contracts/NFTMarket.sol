@@ -41,6 +41,14 @@ contract NFTMarket {
         bool sold;
     }
 
+    struct PendingReturnStruct {
+      uint itemId;
+      mapping(address => uint) pendingReturns;
+    }
+
+    // a mapping from ntf item id to its details struct
+    mapping(uint256 => PendingReturnStruct) private idToPendingReturn;
+
     // a mapping from ntf item id to its details struct
     mapping(uint256 => BidItem) private idToBidItem;
 
@@ -138,6 +146,8 @@ contract NFTMarket {
 
         if (idToBidItem[itemId].highestBid != 0) {
             pendingReturns[idToBidItem[itemId].highestBidder] += idToBidItem[itemId].highestBid;
+            PendingReturnStruct storage p = idToPendingReturn[itemId];
+            p.pendingReturns[msg.sender] += msg.value;
         }
         idToBidItem[itemId].highestBidder = msg.sender;
         idToBidItem[itemId].highestBid = msg.value;
@@ -145,15 +155,17 @@ contract NFTMarket {
     }
 
 
-    function withdraw() public nonReentrant returns (bool){
-        uint amount = pendingReturns[msg.sender];
+    function withdraw(uint256 itemId) public nonReentrant returns (bool){
+        require(msg.sender != idToBidItem[itemId].highestBidder,"You are the highest bidder, can't withdraw");
+        PendingReturnStruct storage p = idToPendingReturn[itemId];
+        uint amount = p.pendingReturns[msg.sender];
         if (amount > 0) {
  
-            pendingReturns[msg.sender] = 0;
+            p.pendingReturns[msg.sender] = 0;
 
             if (!payable(msg.sender).send(amount)) {
                 // No need to call throw here, just reset the amount owing
-                pendingReturns[msg.sender] = amount;
+                p.pendingReturns[msg.sender] = amount;
                 return false;
             }
         }
