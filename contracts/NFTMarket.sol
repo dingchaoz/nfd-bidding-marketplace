@@ -41,19 +41,18 @@ contract NFTMarket {
         bool sold;
     }
 
+    // struct to store pending bidding amount for each account for an nft item
     struct PendingReturnStruct {
       uint itemId;
       mapping(address => uint) pendingReturns;
     }
 
-    // a mapping from ntf item id to its details struct
+    // a mapping from ntf item id to pending return for its bidders
     mapping(uint256 => PendingReturnStruct) private idToPendingReturn;
 
     // a mapping from ntf item id to its details struct
     mapping(uint256 => BidItem) private idToBidItem;
 
-    // store each bidder's bidding amount so they can withdraw if their bids were overbid
-    mapping(address => uint) pendingReturns;
 
     /* ========== EVENTS ========== */
 
