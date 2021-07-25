@@ -144,7 +144,6 @@ contract NFTMarket {
         );
 
         if (idToBidItem[itemId].highestBid != 0) {
-            pendingReturns[idToBidItem[itemId].highestBidder] += idToBidItem[itemId].highestBid;
             PendingReturnStruct storage p = idToPendingReturn[itemId];
             p.pendingReturns[msg.sender] += msg.value;
         }

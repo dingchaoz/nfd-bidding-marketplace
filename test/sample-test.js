@@ -185,6 +185,31 @@ describe("Marketplace contract", function() {
     assert.equal(tokenOwner, addr2.address)
     });
 
+    it("Should transfer commission fee to the marketplace contract owner", async function() {
+      let listingPrice = await market.getListingPrice()
+      listingPrice = listingPrice.toString()
+      let nftContractAddress = nft.address
+      let minPrice = ethers.utils.parseUnits('1', 'ether')
+      let auctionPrice = ethers.utils.parseUnits('10', 'ether')
+      let higherAuctionPrice = ethers.utils.parseUnits('20', 'ether')
+  
+      await nft.createToken("https://www.mytokenlocation.com")
+      await market.createBidItem(nftContractAddress, 1, minPrice, 10000,{value: listingPrice })
+      await market.connect(addr3).bid(1, { value: auctionPrice})
+      await market.connect(addr2).bid(1, { value: higherAuctionPrice})
+      await network.provider.send("evm_increaseTime", [10000])
+      prev_balance = await provider.getBalance(creator.address)
+      prev_balance = parseFloat(ethers.utils.formatEther(prev_balance))
+      console.log("prev balance",prev_balance)
+      await market.connect(creator).auctionEnd(nftContractAddress,1)
+      post_balance = await provider.getBalance(creator.address)
+      post_balance = parseFloat(ethers.utils.formatUnits(post_balance,18))
+      expect(post_balance).to.be.above(prev_balance)
+      
+      });
+
+
+
   });
 
 })
