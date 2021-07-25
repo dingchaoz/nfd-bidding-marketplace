@@ -53,7 +53,7 @@ contract NFTMarket {
     mapping(uint256 => BidItem) private idToBidItem;
 
     // store each bidder's bidding amount so they can withdraw if their bids were overbid
-    mapping(address => uint) pendingReturns;
+    // mapping(address => uint) pendingReturns;
 
     /* ========== EVENTS ========== */
 
@@ -145,7 +145,7 @@ contract NFTMarket {
         );
 
         if (idToBidItem[itemId].highestBid != 0) {
-            pendingReturns[idToBidItem[itemId].highestBidder] += idToBidItem[itemId].highestBid;
+            //pendingReturns[idToBidItem[itemId].highestBidder] += idToBidItem[itemId].highestBid;
             PendingReturnStruct storage p = idToPendingReturn[itemId];
             p.pendingReturns[msg.sender] += msg.value;
         }

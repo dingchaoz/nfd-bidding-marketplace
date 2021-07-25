@@ -14,7 +14,7 @@ function Marketplace({ Component, pageProps }) {
           </Link>
           <Link href="/create-item">
             <a className="mr-6 text-blue-500">
-              Bid Digital Asset
+              Create Digital Asset
             </a>
           </Link>
           <Link href="/my-assets">
