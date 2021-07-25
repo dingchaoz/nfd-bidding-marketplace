@@ -14,12 +14,12 @@ function Marketplace({ Component, pageProps }) {
           </Link>
           <Link href="/create-item">
             <a className="mr-6 text-blue-500">
-              Create Digital Asset
+              Create NFT
             </a>
           </Link>
           <Link href="/my-assets">
             <a className="mr-6 text-blue-500">
-              My Digital Assets
+              My NFT
             </a>
           </Link>
           <Link href="/creator-dashboard">

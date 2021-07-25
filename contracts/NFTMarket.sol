@@ -41,19 +41,18 @@ contract NFTMarket {
         bool sold;
     }
 
+    // a struct to store pending return of each address for an nft item
     struct PendingReturnStruct {
       uint itemId;
       mapping(address => uint) pendingReturns;
     }
 
-    // a mapping from ntf item id to its details struct
+    // a mapping from ntf item id to its pending return for each bidder
     mapping(uint256 => PendingReturnStruct) private idToPendingReturn;
 
     // a mapping from ntf item id to its details struct
     mapping(uint256 => BidItem) private idToBidItem;
 
-    // store each bidder's bidding amount so they can withdraw if their bids were overbid
-    // mapping(address => uint) pendingReturns;
 
     /* ========== EVENTS ========== */
 
@@ -145,7 +144,7 @@ contract NFTMarket {
         );
 
         if (idToBidItem[itemId].highestBid != 0) {
-            //pendingReturns[idToBidItem[itemId].highestBidder] += idToBidItem[itemId].highestBid;
+
             PendingReturnStruct storage p = idToPendingReturn[itemId];
             p.pendingReturns[msg.sender] += msg.value;
         }
