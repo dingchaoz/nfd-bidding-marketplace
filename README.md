@@ -32,7 +32,11 @@ npm run dev
 7. Now you are able to creat NFT and put them for bidding!
 
 ## Operations Demo
+1. Create NFT
+- ![](./images/create-nft-demo.gif)
 
+2. Bid NFT
+- ![](./images/bid-on-NFT.gif)
 
 ## Design Considerations
 1. Reentrancy Attack prevention
