@@ -86,13 +86,13 @@ npm run dev
        - 1.3.4 If reentrancy occured, the counter would be incremented
        - 1.3.5 Check is made to ensure the copy of the counter value still equals the counter, otherwise it reverts
 
-       ```
+       ```solidity
         modifier nonReentrant() {
         _entrancyCount.increment();
         uint256 guard = _entrancyCount.current();
         _;
         require(guard == _entrancyCount.current(), "Reentrancy is not allowed"); 
-    }
+        }
 
        ```
 
